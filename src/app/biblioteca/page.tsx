@@ -11,12 +11,10 @@ export default function Biblioteca() {
             const res = await fetch(`/api/biblia?busca=${termo}`);
             const data = await res.json();
 
-            if (data.text) {
-                setResultado(data.text);
-            } else if (data.verses) {
+            if (data.verses && data.verses.length > 0) {
                 setResultado(data.verses[0].text);
             } else {
-                setResultado("Nada encontrado");
+                setResultado("Nenhum resultado encontrado");
             }
         } catch (error) {
             setResultado("Erro de conexão com API");
