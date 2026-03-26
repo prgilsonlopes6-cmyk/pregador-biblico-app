@@ -14,7 +14,7 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
     setError(false);
-    
+
     try {
       const result = await loginAction(password);
       if (result.success) {
@@ -40,30 +40,30 @@ export default function Login() {
         <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
           Acesso Restrito. Por favor, insira a senha.
         </p>
-        
+
         <form onSubmit={handleLogin}>
-          <input 
-            type="password" 
-            placeholder="Senha de acesso..." 
-            className="input-field" 
+          <input
+            type="password"
+            placeholder="Senha de acesso..."
+            className="input-field"
             value={password}
             onChange={(e) => { setPassword(e.target.value); setError(false); }}
             disabled={isLoading}
             style={{ marginBottom: '1rem', border: error ? '1px solid #f78166' : '' }}
           />
           {error && <p style={{ color: '#f78166', fontSize: '0.9rem', marginBottom: '1rem' }}>Senha incorreta.</p>}
-          <button 
-            type="submit" 
-            className="btn-primary" 
+          <button
+            type="submit"
+            className="btn-primary"
             style={{ width: '100%' }}
             disabled={isLoading}
           >
             {isLoading ? 'Verificando...' : 'Acessar Aplicativo'}
           </button>
         </form>
-        
+
         <div style={{ marginTop: '2.5rem', fontSize: '1rem', color: 'var(--text-secondary)' }}>
-          Criado e Desenvolvido para<br/>
+          Criado e Desenvolvido para<br />
           <strong style={{ color: 'var(--gold-accent)', fontSize: '1.2rem' }}>Pr. Gilson Lopes</strong>
         </div>
       </div>
