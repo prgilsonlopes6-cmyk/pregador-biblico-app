@@ -7,14 +7,14 @@ export default function Home() {
         Pregador <span className="text-accent">Bíblico</span>
       </h1>
       <p style={{ fontSize: '1.2rem', color: 'var(--gold-accent)', marginBottom: '1rem', fontWeight: 'bold' }}>
-        por Pr. Gilson Lopes
+        Pr. Gilson Lopes
       </p>
       <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '3rem' }}>
         Estudo profundo, exegese no original e plataforma de sermões estruturados.
       </p>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '2rem', textAlign: 'left' }}>
-        
+
         <div className="glass-panel" style={{ background: 'rgba(20, 25, 30, 0.4)' }}>
           <h2 style={{ marginBottom: '1rem' }} className="text-gold">📖 Pesquisa Bíblica Digital</h2>
           <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
