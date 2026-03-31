@@ -15,9 +15,10 @@ export async function POST(req: Request) {
 
     const prompt = `Você é um exegeta magistral especializado nas línguas originais da Bíblia (Grego Coiné e Hebraico Bíblico), e ensina pastores da Assembleia de Deus.
 Realize uma exegese profunda da seguinte palavra ou versículo: "${word}".
+[IMPORTANTE: Se a palavra acima estiver em português, identifique o termo bíblico original correspondente, e faça a exegese focada na PALAVRA ORIGINAL.]
 
 [Sua resposta OBRIGATORIAMENTE deve conter e usar formatação Markdown clara:]
-1. **Apresentação da Palavra/Versículo:** Qual o termo original no Grego ou Hebraico (com alfabeto original e transliteração).
+1. **Apresentação da Palavra/Versículo:** Qual o termo original no Grego ou Hebraico (alfabeto original e sua TRANSLITERAÇÃO exata, pois a busca pode ter sido em português).
 2. **Dicionário Strong:** O número de Strong e a etimologia.
 3. **Morfologia & Gramática:** Análise do tempo verbal ou da estrutura lógica no original (se for um versículo).
 4. **Contexto Original:** O que o texto significava para os ouvintes originais naquela cultura da época.
