@@ -32,7 +32,7 @@ export default function BibliotecaPage() {
         } else {
           setResult({
             title: data.reference,
-            text: data.text || data.verses?.map((v: any) => v.text).join(" ")
+            markdown: data.verses?.map((v: any) => `**${v.verse}** ${v.text}`).join("\n\n") || data.text
           });
         }
       } else if (activeTab === "dicionario") {
@@ -171,20 +171,14 @@ export default function BibliotecaPage() {
 
       {result && (
         <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(20, 25, 30, 0.6)' }}>
-          {result.title ? (
-            <>
-              <h2 style={{ color: 'var(--gold-accent)', marginBottom: '1.5rem', borderBottom: '1px solid rgba(227, 179, 65, 0.2)', paddingBottom: '0.5rem' }}>
-                {result.title}
-              </h2>
-              <p style={{ fontSize: '1.1rem', lineHeight: '1.8', color: 'var(--text-primary)' }}>
-                {result.text}
-              </p>
-            </>
-          ) : (
-            <div style={{ lineHeight: '1.8', fontSize: '1.05rem', color: 'var(--text-primary)' }} className="markdown-body">
-              <ReactMarkdown>{result.markdown}</ReactMarkdown>
-            </div>
+          {result.title && (
+            <h2 style={{ color: 'var(--gold-accent)', marginBottom: '1.5rem', borderBottom: '1px solid rgba(227, 179, 65, 0.2)', paddingBottom: '0.5rem' }}>
+              {result.title}
+            </h2>
           )}
+          <div style={{ lineHeight: '1.8', fontSize: '1.05rem', color: 'var(--text-primary)' }} className="markdown-body">
+            <ReactMarkdown>{result.markdown}</ReactMarkdown>
+          </div>
         </div>
       )}
     </div>

@@ -5,7 +5,7 @@ export async function GET(req: Request) {
   const busca = searchParams.get("busca");
 
   try {
-    const response = await fetch(`https://bible-api.com/${busca}`);
+    const response = await fetch(`https://bible-api.com/${busca}?translation=almeida`);
     const data = await response.json();
 
     return NextResponse.json(data);
