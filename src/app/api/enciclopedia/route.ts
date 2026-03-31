@@ -14,7 +14,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Chave da API não configurada." }, { status: 500 });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
+    const genAI = new GoogleGenerativeAI(apiKey as string);
     const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `Você é um enciclopedista teológico abrangente e erudito, fundamentado na tradição da Assembleia de Deus.
