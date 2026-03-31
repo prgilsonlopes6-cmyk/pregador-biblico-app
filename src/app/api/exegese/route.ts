@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Texto não fornecido." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY || "AIzaSyALCmZnhEfOv0M-jQsEIPWNGho24YoG4mY";
+    const apiKey = process.env.GEMINI_API_KEY;
     const genAI = new GoogleGenerativeAI(apiKey);
     const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 

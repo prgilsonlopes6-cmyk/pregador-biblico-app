@@ -1,0 +1,74 @@
+﻿
+> pregador-biblico-app@0.1.0 dev
+> next dev
+
+Ôû▓ Next.js 16.2.1 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.0.102:3000
+- Environments: .env.local
+Ô£ô Ready in 4.3s
+
+node.exe : Erro na 
+API de dicion├írio: 
+Error: 
+[GoogleGenerativeAI 
+Error]: Error 
+fetching from https://
+generativelanguage.goo
+gleapis.com/v1beta/mod
+els/gemini-flash-lates
+t:generateContent: 
+[403 Forbidden] Your 
+API key was reported 
+as leaked. Please use 
+another API key.
+No linha:1 caractere:1
++ & "C:\Program Files\
+nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~
+~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (Erro na AP   
+ I de ...nother AP    
+I key.:String) []    
+, RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+    at async POST (src
+\app\api\dicionario\ro
+ute.ts:24:20)
+  22 | O formato da 
+resposta deve ser em 
+Markdown, claro, 
+acad├¬mico e 
+acess├¡vel. Crie 
+t├¡tulos e e...
+  23 |
+> 24 |     const 
+result = await model.g
+enerateContent(prompt)
+;
+     |                
+    ^
+  25 |     const text 
+= result.response.text
+();
+  26 |
+  27 |     return 
+NextResponse.json({ 
+result: text }); {
+  status: 403,
+  statusText: 
+'Forbidden',
+  errorDetails: 
+undefined
+}
+ POST /api/dicionario 500 in 2.4s (next.js: 880ms, application-code: 1509ms)
