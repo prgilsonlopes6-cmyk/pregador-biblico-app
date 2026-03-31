@@ -9,9 +9,9 @@ export async function GET(req: Request) {
     const data = await response.json();
 
     return NextResponse.json(data);
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
-      { erro: "Erro ao buscar dados" },
+      { error: "Erro ao buscar a Bíblia." },
       { status: 500 }
     );
   }

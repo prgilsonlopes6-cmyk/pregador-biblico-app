@@ -10,7 +10,7 @@ export default function BibliotecaPage() {
   const [activeTab, setActiveTab] = useState<Tab>("biblia");
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState<any>(null);
+  const [result, setResult] = useState<{ title?: string; markdown: string } | null>(null);
   const [error, setError] = useState("");
 
   const handleSearch = async (e: React.FormEvent) => {
@@ -32,7 +32,7 @@ export default function BibliotecaPage() {
         } else {
           setResult({
             title: data.reference,
-            markdown: data.verses?.map((v: any) => `**${v.verse}** ${v.text}`).join("\n\n") || data.text
+            markdown: data.verses?.map((v: { verse: string; text: string }) => `**${v.verse}** ${v.text}`).join("\n\n") || data.result
           });
         }
       } else if (activeTab === "dicionario") {

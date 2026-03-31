@@ -57,7 +57,7 @@ export default function Sermoes() {
         const data = await res.json();
         alert(data.error || 'Erro ao guardar sermão.');
       }
-    } catch (err) {
+    } catch (_err) {
       alert('Erro de conexão ao guardar sermão.');
     } finally {
       setIsLoading(false);
@@ -77,7 +77,7 @@ export default function Sermoes() {
           setContent('');
         }
       }
-    } catch (err) {
+    } catch (_err) {
       alert('Erro ao excluir sermão.');
     }
   };
@@ -101,7 +101,7 @@ export default function Sermoes() {
       } else {
         alert(data.error || 'Erro ao gerar sermão.');
       }
-    } catch (err) {
+    } catch (_err) {
       alert('Erro de conexão ao gerar sermão.');
     } finally {
       setIsGenerating(false);
