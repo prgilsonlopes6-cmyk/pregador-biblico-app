@@ -120,15 +120,20 @@ export default function BibliotecaPage() {
               setQuery("");
             }}
             style={{
-              padding: '0.75rem 1.5rem',
-              borderRadius: '8px',
-              border: activeTab === tab.id ? '1px solid var(--gold-accent)' : '1px solid rgba(255,255,255,0.1)',
-              background: activeTab === tab.id ? 'rgba(227, 179, 65, 0.1)' : 'rgba(20, 25, 30, 0.4)',
+              padding: '1rem 1.5rem',
+              borderRadius: '12px',
+              border: '1px solid',
+              borderColor: activeTab === tab.id ? 'var(--gold-accent)' : 'rgba(255,255,255,0.1)',
+              background: activeTab === tab.id ? 'linear-gradient(135deg, rgba(227, 179, 65, 0.2), rgba(227, 179, 65, 0.05))' : 'rgba(20, 25, 30, 0.6)',
               color: activeTab === tab.id ? 'var(--gold-accent)' : 'var(--text-secondary)',
               cursor: 'pointer',
-              fontWeight: activeTab === tab.id ? 'bold' : 'normal',
+              fontWeight: activeTab === tab.id ? '800' : '500',
+              fontSize: activeTab === tab.id ? '1.1rem' : '1rem',
+              boxShadow: activeTab === tab.id ? '0 0 20px rgba(227, 179, 65, 0.3)' : 'none',
+              transition: 'all 0.3s ease',
               flex: 1,
-              minWidth: '200px'
+              minWidth: '200px',
+              letterSpacing: '0.5px'
             }}
           >
             {tab.label}
