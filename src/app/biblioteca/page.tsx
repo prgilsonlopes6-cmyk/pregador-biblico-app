@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 
-type Tab = "biblia" | "dicionario" | "enciclopedia";
+type Tab = "biblia" | "dicionario" | "enciclopedia" | "exegese";
 
 export default function BibliotecaPage() {
   const [activeTab, setActiveTab] = useState<Tab>("biblia");
@@ -61,6 +61,19 @@ export default function BibliotecaPage() {
         } else {
           setResult({ markdown: data.result });
         }
+      } else if (activeTab === "exegese") {
+        const res = await fetch("/api/exegese", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ word: query }),
+        });
+        const data = await res.json();
+
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setResult({ markdown: data.result });
+        }
       }
     } catch (err) {
       console.error(err);
@@ -95,7 +108,8 @@ export default function BibliotecaPage() {
         {[
           { id: "biblia", label: "📖 Bíblia" },
           { id: "dicionario", label: "📓 Dicionário Teológico" },
-          { id: "enciclopedia", label: "🏛️ Enciclopédia Bíblica" }
+          { id: "enciclopedia", label: "🏛️ Enciclopédia Bíblica" },
+          { id: "exegese", label: "🔎 Exegese (Original)" }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -128,11 +142,13 @@ export default function BibliotecaPage() {
           {activeTab === "biblia" && "Pesquisar Referência Bíblica"}
           {activeTab === "dicionario" && "Buscar Significado Teológico"}
           {activeTab === "enciclopedia" && "Explorar Tópico Bíblico"}
+          {activeTab === "exegese" && "Pesquisar Palavra ou Verso no Grego/Hebraico"}
         </h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
           {activeTab === "biblia" && "Exemplo: João 3:16 ou Genesis 1"}
           {activeTab === "dicionario" && "Exemplo: Graça, Justificação, Escatologia"}
           {activeTab === "enciclopedia" && "Exemplo: Arca da Aliança, Império Romano, Templo de Salomão"}
+          {activeTab === "exegese" && "Exemplo: João 1:1, Chesed, Ágape, Paráclito"}
         </p>
 
         <form onSubmit={handleSearch} style={{ display: 'flex', gap: '1rem' }}>
