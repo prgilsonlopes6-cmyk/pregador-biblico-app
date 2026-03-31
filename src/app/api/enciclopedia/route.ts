@@ -9,7 +9,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Tópico não fornecido." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY || "AIzaSyALCmZnhEfOv0M-jQsEIPWNGho24YoG4mY";
     if (!apiKey) {
       return NextResponse.json({ error: "Chave da API não configurada." }, { status: 500 });
     }
