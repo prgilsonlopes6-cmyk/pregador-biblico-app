@@ -1,0 +1,44 @@
+﻿commit 91a6968c17d1fffe39883aaffa059b8565538299
+Author: Gilson Araujo | Essentia Energia <gilson.araujo@essentiaenergia.com.br>
+Date:   Mon Mar 30 16:53:09 2026 -0300
+
+    corrigindo biblioteca
+
+ src/app/page.tsx | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+commit 15408a51dd982d3b7510ee985c865290e1189840
+Author: Gilson Araujo | Essentia Energia <gilson.araujo@essentiaenergia.com.br>
+Date:   Mon Mar 30 16:26:58 2026 -0300
+
+    corrigindo biblioteca
+
+ tsconfig.json | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+commit 757120034cb924a0c5f790b7e0fba589881812e6
+Author: Gilson Araujo | Essentia Energia <gilson.araujo@essentiaenergia.com.br>
+Date:   Fri Mar 27 13:40:29 2026 -0300
+
+    corrigindo biblioteca
+
+ src/app/api/ia-completa/route.ts | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 1a656ab3fc3b6073cf8ad4307078a19f59882950
+Author: Gilson Araujo | Essentia Energia <gilson.araujo@essentiaenergia.com.br>
+Date:   Fri Mar 27 13:34:43 2026 -0300
+
+    forcando tudo
+
+ src/app/api/ia-completa/route.ts | 0
+ 1 file changed, 0 insertions(+), 0 deletions(-)
+
+commit 56bc97606b27285f0d0aec4297aadc927a7eb1de
+Author: Gilson Araujo | Essentia Energia <gilson.araujo@essentiaenergia.com.br>
+Date:   Fri Mar 27 10:15:37 2026 -0300
+
+    corrigindo biblioteca
+
+ src/app/biblioteca/page.tsx | 42 ------------------------------------------
+ 1 file changed, 42 deletions(-)
