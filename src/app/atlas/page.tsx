@@ -31,8 +31,6 @@ export default function AtlasBiblico() {
   const [data, setData] = useState<AtlasData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
-  const [isFallback, setIsFallback] = useState(false);
-  const [fallbackUrl, setFallbackUrl] = useState<string | null>(null);
 
   const handleSearch = async (e?: React.FormEvent, overrideQuery?: string) => {
     if (e) e.preventDefault();
@@ -45,30 +43,23 @@ export default function AtlasBiblico() {
     if (overrideQuery) setQuery(overrideQuery);
 
     try {
-      const userKey = localStorage.getItem('user_gemini_key') || '';
       const res = await fetch('/api/atlas', {
         method: 'POST',
-        headers: { 
-          'Content-Type': 'application/json',
-          'x-gemini-key': userKey
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ location: activeQuery }),
       });
 
       if (res.ok) {
         const atlasData: AtlasData = await res.json();
         setData(atlasData);
-        setIsFallback(false);
         fetchImage(atlasData.name);
       } else {
-        // Ativa o fallback automático para a web em caso de erro 500 (cota da IA)
-        setIsFallback(true);
-        setFallbackUrl(`https://pt.m.wikipedia.org/wiki/${encodeURIComponent(activeQuery)}`);
+        const errData = await res.json();
+        alert(errData.error || 'Erro ao buscar dados do atlas.');
       }
     } catch (err) {
       console.error(err);
-      setIsFallback(true);
-      setFallbackUrl(`https://pt.m.wikipedia.org/wiki/${encodeURIComponent(activeQuery)}`);
+      alert('Erro de conexão ao buscar dados do atlas.');
     } finally {
       setIsLoading(false);
     }
@@ -209,29 +200,10 @@ export default function AtlasBiblico() {
         </div>
       )}
 
-      {!data && !isFallback && !isLoading && (
+      {!data && !isLoading && (
         <div style={{ padding: '4rem', textAlign: 'center', opacity: 0.5 }}>
           <div style={{ fontSize: '4rem', marginBottom: '1rem' }}>🗺️</div>
           <p>Digite o nome de uma cidade, monte ou região bíblica para começar sua exploração.</p>
-        </div>
-      )}
-
-      {isFallback && !isLoading && (
-        <div className="glass-panel" style={{ padding: '0', overflow: 'hidden', height: '80vh', border: '1px solid rgba(255,255,255,0.2)' }}>
-          <div style={{ padding: '1rem', background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
-            <span style={{ color: 'var(--gold-accent)', fontSize: '0.9rem', fontWeight: 'bold' }}>📡 Modo Navegador Bíblico (Conexão Direta)</span>
-            <button 
-              onClick={() => setIsFallback(false)} 
-              style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '0.8rem', textDecoration: 'underline' }}
-            >
-              Limpar Pesquisa
-            </button>
-          </div>
-          <iframe 
-            src={fallbackUrl || ''} 
-            style={{ width: '100%', height: 'calc(100% - 3.5rem)', border: 'none', background: '#fff' }}
-            title="Navegador Bíblico"
-          />
         </div>
       )}
 
