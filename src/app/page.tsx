@@ -52,6 +52,18 @@ export default function Home() {
         </div>
 
         <div className="glass-panel" style={{ background: 'rgba(20, 25, 30, 0.4)', textAlign: 'left' }}>
+          <h2 style={{ marginBottom: '1rem' }} className="text-gold">⏳ Cronologia Bíblica</h2>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+            Localize-se na história com uma linha do tempo interativa, dos patriarcas ao Novo Testamento.
+          </p>
+          <Link href="/cronologia">
+            <button className="btn-primary" style={{ width: '100%', fontSize: '1.1rem', background: 'linear-gradient(135deg, var(--gold-accent), #854d0e)' }}>
+              Abrir Cronologia
+            </button>
+          </Link>
+        </div>
+
+        <div className="glass-panel" style={{ background: 'rgba(20, 25, 30, 0.4)', textAlign: 'left' }}>
           <h2 style={{ marginBottom: '1rem' }} className="text-gold">📂 Biblioteca</h2>
           <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
             Acesse o acervo completo de materiais, estudos e recursos bíblicos salvos no Google Drive do ministério.
