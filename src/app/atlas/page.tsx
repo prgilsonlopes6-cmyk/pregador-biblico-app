@@ -32,19 +32,21 @@ export default function AtlasBiblico() {
   const [isLoading, setIsLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
 
-  const handleSearch = async (e?: React.FormEvent) => {
+  const handleSearch = async (e?: React.FormEvent, overrideQuery?: string) => {
     if (e) e.preventDefault();
-    if (!query) return;
+    const activeQuery = overrideQuery || query;
+    if (!activeQuery) return;
 
     setIsLoading(true);
     setData(null);
     setImageUrl(null);
+    if (overrideQuery) setQuery(overrideQuery);
 
     try {
       const res = await fetch('/api/atlas', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ location: query }),
+        body: JSON.stringify({ location: activeQuery }),
       });
 
       if (res.ok) {
@@ -96,9 +98,19 @@ export default function AtlasBiblico() {
         {['Crescente Fértil', 'Egito', 'Canaã', 'Galileia', 'Judéia', 'Samaria', 'Mesopotâmia', 'Viagens de Paulo'].map((region) => (
           <button 
             key={region} 
-            onClick={() => { setQuery(region); setTimeout(() => handleSearch(), 100); }}
+            onClick={() => handleSearch(undefined, region)}
             className="btn-secondary"
-            style={{ padding: '0.4rem 1rem', fontSize: '0.9rem', borderRadius: '20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+            style={{ 
+              padding: '0.6rem 1.2rem', 
+              fontSize: '1rem', 
+              fontWeight: 'bold',
+              borderRadius: '20px', 
+              background: 'rgba(255, 255, 255, 0.15)', 
+              border: '1px solid rgba(255, 255, 255, 0.3)',
+              color: '#fff',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease'
+            }}
           >
             {region}
           </button>
@@ -112,13 +124,13 @@ export default function AtlasBiblico() {
           className="input-field" 
           value={query} 
           onChange={(e) => setQuery(e.target.value)} 
-          style={{ flex: 1, fontSize: '1.2rem' }}
+          style={{ flex: 1, fontSize: '1.2rem', color: '#fff', fontWeight: '500' }}
         />
         <button 
           type="submit" 
           className="btn-primary" 
           disabled={isLoading}
-          style={{ padding: '0 2rem' }}
+          style={{ padding: '0 2rem', fontWeight: 'bold' }}
         >
           {isLoading ? 'Explorando...' : 'Pesquisar'}
         </button>
