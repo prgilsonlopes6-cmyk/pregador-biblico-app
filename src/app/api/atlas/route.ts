@@ -53,10 +53,14 @@ A resposta deve ser APENAS o JSON, sem markdown ou explicações externas.`;
     const response = await result.response;
     let text = response.text();
     
-    // Remove markdown code blocks if present
-    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    // Busca o bloco JSON dentro da resposta (entre as primeiras { e última })
+    const jsonMatch = text.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) {
+      console.error("Não foi possível encontrar JSON na resposta da IA:", text);
+      throw new Error("Resposta da IA inválida");
+    }
     
-    const data = JSON.parse(text);
+    const data = JSON.parse(jsonMatch[0]);
 
     return NextResponse.json(data);
   } catch (error) {

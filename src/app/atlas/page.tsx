@@ -154,9 +154,9 @@ export default function AtlasBiblico() {
             <div className="glass-panel" style={{ background: 'rgba(52, 211, 153, 0.05)', padding: '1.5rem', border: '1px solid rgba(52, 211, 153, 0.2)' }}>
               <h3 style={{ color: '#34d399', marginBottom: '1rem' }}>🏔️ Geografia Física</h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-                <p><strong>Relevo:</strong> {data.physical_geography.relief}</p>
-                <p><strong>Clima:</strong> {data.physical_geography.climate}</p>
-                <p><strong>Águas:</strong> {data.physical_geography.waters}</p>
+                <p><strong>Relevo:</strong> {data.physical_geography?.relief || 'Informação não disponível'}</p>
+                <p><strong>Clima:</strong> {data.physical_geography?.climate || 'Informação não disponível'}</p>
+                <p><strong>Águas:</strong> {data.physical_geography?.waters || 'Informação não disponível'}</p>
               </div>
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function AtlasBiblico() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
             <div className="glass-panel" style={{ background: 'rgba(139, 92, 246, 0.05)', padding: '1.5rem', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
               <h3 style={{ color: '#a78bfa', marginBottom: '0.8rem' }}>⚔️ Importância Estratégica</h3>
-              <p style={{ fontSize: '1rem', lineHeight: '1.6' }}>{data.strategic_importance}</p>
+              <p style={{ fontSize: '1rem', lineHeight: '1.6' }}>{data.strategic_importance || 'Análise estratégica não disponível para este local.'}</p>
             </div>
 
             <div className="glass-panel" style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem' }}>
