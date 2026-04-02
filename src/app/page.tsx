@@ -40,6 +40,18 @@ export default function Home() {
         </div>
 
         <div className="glass-panel" style={{ background: 'rgba(20, 25, 30, 0.4)', textAlign: 'left' }}>
+          <h2 style={{ marginBottom: '1rem' }} className="text-accent">🗺️ Atlas Bíblico</h2>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+            Explore a geografia bíblica com mapas interativos e imagens históricas de cidades e regiões citadas nas Escrituras.
+          </p>
+          <Link href="/atlas">
+            <button className="btn-primary" style={{ width: '100%', fontSize: '1.1rem', background: 'linear-gradient(135deg, #10b981, #065f46)' }}>
+              Abrir Atlas Bíblico
+            </button>
+          </Link>
+        </div>
+
+        <div className="glass-panel" style={{ background: 'rgba(20, 25, 30, 0.4)', textAlign: 'left' }}>
           <h2 style={{ marginBottom: '1rem' }} className="text-gold">📂 Biblioteca</h2>
           <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
             Acesse o acervo completo de materiais, estudos e recursos bíblicos salvos no Google Drive do ministério.
