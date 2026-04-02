@@ -9,9 +9,12 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Tópico não fornecido." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Prioridade para a chave do usuário enviada no cabeçalho
+    const userApiKey = req.headers.get("x-gemini-key");
+    const apiKey = userApiKey || process.env.GEMINI_API_KEY;
+
     if (!apiKey) {
-      return NextResponse.json({ error: "Chave da API não configurada." }, { status: 500 });
+      return NextResponse.json({ error: "Chave da API não configurada. Por favor, insira sua chave nas configurações (ícone de engrenagem)." }, { status: 500 });
     }
     const genAI = new GoogleGenerativeAI(apiKey as string);
     const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });

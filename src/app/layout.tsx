@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
+import ApiKeySettings from '@/components/ApiKeySettings';
 
 export const metadata: Metadata = {
   title: 'Pregador Bíblico | Pr. Gilson Lopes',
@@ -14,7 +15,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh', margin: 0 }}>
-
+        <ApiKeySettings />
         <main className="container" style={{ flexGrow: 1, width: '100%', position: 'relative', zIndex: 1 }}>
           {children}
         </main>

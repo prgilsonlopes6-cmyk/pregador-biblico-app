@@ -38,9 +38,13 @@ export default function CronologiaBiblica() {
     setData(null);
 
     try {
+      const userKey = localStorage.getItem('user_gemini_key') || '';
       const res = await fetch('/api/cronologia', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'x-gemini-key': userKey
+        },
         body: JSON.stringify({ era }),
       });
 

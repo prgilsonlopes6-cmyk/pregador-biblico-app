@@ -12,6 +12,8 @@ export default function BibliotecaPage() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<{ title?: string; markdown: string } | null>(null);
   const [error, setError] = useState("");
+  const [isFallback, setIsFallback] = useState(false);
+  const [fallbackUrl, setFallbackUrl] = useState("");
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -20,6 +22,9 @@ export default function BibliotecaPage() {
     setLoading(true);
     setError("");
     setResult(null);
+    setIsFallback(false);
+
+    const userKey = typeof window !== 'undefined' ? localStorage.getItem('user_gemini_key') || '' : '';
 
     try {
       if (activeTab === "biblia") {
@@ -38,39 +43,51 @@ export default function BibliotecaPage() {
       } else if (activeTab === "dicionario") {
         const res = await fetch("/api/dicionario", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "x-gemini-key": userKey
+          },
           body: JSON.stringify({ word: query }),
         });
         const data = await res.json();
 
         if (data.error) {
-          setError(data.error);
+          setIsFallback(true);
+          setFallbackUrl(`https://pt.m.wikipedia.org/wiki/${encodeURIComponent(query)}`);
         } else {
           setResult({ markdown: data.result });
         }
       } else if (activeTab === "enciclopedia") {
         const res = await fetch("/api/enciclopedia", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "x-gemini-key": userKey
+          },
           body: JSON.stringify({ topic: query }),
         });
         const data = await res.json();
 
         if (data.error) {
-          setError(data.error);
+          setIsFallback(true);
+          setFallbackUrl(`https://pt.m.wikipedia.org/wiki/${encodeURIComponent(query)}`);
         } else {
           setResult({ markdown: data.result });
         }
       } else if (activeTab === "exegese") {
         const res = await fetch("/api/exegese", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "x-gemini-key": userKey
+          },
           body: JSON.stringify({ word: query }),
         });
         const data = await res.json();
 
         if (data.error) {
-          setError(data.error);
+          setIsFallback(true);
+          setFallbackUrl(`https://pt.m.wikipedia.org/wiki/${encodeURIComponent(query)}`);
         } else {
           setResult({ markdown: data.result });
         }
@@ -190,7 +207,7 @@ export default function BibliotecaPage() {
         </div>
       )}
 
-      {result && (
+      {result && !isFallback && (
         <div className="glass-panel" style={{ padding: '2rem', background: 'rgba(20, 25, 30, 0.6)' }}>
           {result.title && (
             <h2 style={{ color: 'var(--gold-accent)', marginBottom: '1.5rem', borderBottom: '1px solid rgba(227, 179, 65, 0.2)', paddingBottom: '0.5rem' }}>
@@ -200,6 +217,25 @@ export default function BibliotecaPage() {
           <div style={{ lineHeight: '1.8', fontSize: '1.05rem', color: 'var(--text-primary)' }} className="markdown-body">
             <ReactMarkdown>{result.markdown}</ReactMarkdown>
           </div>
+        </div>
+      )}
+
+      {isFallback && (
+        <div className="glass-panel" style={{ padding: '0', overflow: 'hidden', height: '80vh', border: '1px solid rgba(255,255,255,0.2)' }}>
+          <div style={{ padding: '1rem', background: 'rgba(0,0,0,0.5)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+            <span style={{ color: 'var(--gold-accent)', fontSize: '0.9rem', fontWeight: 'bold' }}>📡 Navegador Bíblico (Modo Sem Limites)</span>
+            <button 
+              onClick={() => setIsFallback(false)} 
+              style={{ background: 'transparent', border: 'none', color: '#fff', cursor: 'pointer', fontSize: '0.8rem', textDecoration: 'underline' }}
+            >
+              Fechar Navegador
+            </button>
+          </div>
+          <iframe 
+            src={fallbackUrl} 
+            style={{ width: '100%', height: 'calc(100% - 3.5rem)', border: 'none', background: '#fff' }}
+            title="Enciclopédia Web"
+          />
         </div>
       )}
     </div>
