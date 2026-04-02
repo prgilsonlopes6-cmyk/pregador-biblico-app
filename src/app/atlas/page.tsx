@@ -11,6 +11,12 @@ interface AtlasData {
     lat: number;
     lng: number;
   };
+  physical_geography: {
+    relief: string;
+    climate: string;
+    waters: string;
+  };
+  strategic_importance: string;
   events: {
     event: string;
     reference: string;
@@ -78,18 +84,31 @@ export default function AtlasBiblico() {
     <div className="glass-panel" style={{ marginTop: '2rem' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '2rem' }}>
         <div>
-           <h1 className="text-accent">Atlas Bíblico Digital</h1>
-           <p style={{ color: 'var(--text-secondary)' }}>Explore as terras das Escrituras com imagens e mapas.</p>
+           <h1 className="text-accent">Geografia Bíblica & Atlas</h1>
+           <p style={{ color: 'var(--text-secondary)' }}>Explore as terras, o clima e a história das Escrituras.</p>
         </div>
         <Link href="/">
           <button className="btn-primary" style={{ padding: '0.5rem 1rem', background: 'transparent', border: '1px solid var(--border-color)' }}>Voltar para Home</button>
         </Link>
       </div>
 
+      <div style={{ marginBottom: '2rem', display: 'flex', gap: '0.8rem', flexWrap: 'wrap' }}>
+        {['Crescente Fértil', 'Egito', 'Canaã', 'Galileia', 'Judéia', 'Samaria', 'Mesopotâmia', 'Viagens de Paulo'].map((region) => (
+          <button 
+            key={region} 
+            onClick={() => { setQuery(region); setTimeout(() => handleSearch(), 100); }}
+            className="btn-secondary"
+            style={{ padding: '0.4rem 1rem', fontSize: '0.9rem', borderRadius: '20px', background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)' }}
+          >
+            {region}
+          </button>
+        ))}
+      </div>
+
       <form onSubmit={handleSearch} style={{ display: 'flex', gap: '1rem', marginBottom: '2rem' }}>
         <input 
           type="text" 
-          placeholder="Digite um lugar (ex: Jerusalém, Cafarnaum, Monte Sinai)..." 
+          placeholder="Digite um lugar ou região (ex: Judéia, Rio Jordão, Monte Sinai)..." 
           className="input-field" 
           value={query} 
           onChange={(e) => setQuery(e.target.value)} 
@@ -101,7 +120,7 @@ export default function AtlasBiblico() {
           disabled={isLoading}
           style={{ padding: '0 2rem' }}
         >
-          {isLoading ? 'Buscando...' : 'Pesquisar'}
+          {isLoading ? 'Explorando...' : 'Pesquisar'}
         </button>
       </form>
 
@@ -115,38 +134,38 @@ export default function AtlasBiblico() {
             </div>
 
             <div className="glass-panel" style={{ background: 'rgba(37, 99, 235, 0.05)', padding: '1.5rem', border: '1px solid rgba(37, 99, 235, 0.2)' }}>
-              <h3 style={{ color: '#60a5fa', marginBottom: '1rem' }}>📍 Geografia Atual</h3>
-              <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-color)', height: '300px' }}>
+              <h3 style={{ color: '#60a5fa', marginBottom: '1rem' }}>📍 Mapa e Localização</h3>
+              <div style={{ borderRadius: '12px', overflow: 'hidden', border: '1px solid var(--border-color)', height: '300px', marginBottom: '1rem' }}>
                 <iframe 
                   width="100%" 
                   height="100%" 
                   style={{ border: 0 }} 
                   loading="lazy" 
                   allowFullScreen 
-                  src={`https://www.google.com/maps/embed/v1/view?key=YOUR_API_KEY_OR_USE_SEARCH&center=${data.coordinates.lat},${data.coordinates.lng}&zoom=12&maptype=satellite`}
-                  /* Note: embed/v1 usually needs a key, but one can use search mode without key for a simple specific place */
                   srcDoc={`
                     <style>body{margin:0;overflow:hidden;}</style>
-                    <iframe src="https://maps.google.com/maps?q=${data.coordinates.lat},${data.coordinates.lng}&z=15&t=k&output=embed" width="100%" height="100%" frameborder="0" style="border:0"></iframe>
+                    <iframe src="https://maps.google.com/maps?q=${data.coordinates.lat},${data.coordinates.lng}&z=10&t=k&output=embed" width="100%" height="100%" frameborder="0" style="border:0"></iframe>
                   `}
                 ></iframe>
+              </div>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textAlign: 'center' }}>Coordenadas: {data.coordinates.lat.toFixed(4)}, {data.coordinates.lng.toFixed(4)}</p>
+            </div>
+
+            <div className="glass-panel" style={{ background: 'rgba(52, 211, 153, 0.05)', padding: '1.5rem', border: '1px solid rgba(52, 211, 153, 0.2)' }}>
+              <h3 style={{ color: '#34d399', marginBottom: '1rem' }}>🏔️ Geografia Física</h3>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
+                <p><strong>Relevo:</strong> {data.physical_geography.relief}</p>
+                <p><strong>Clima:</strong> {data.physical_geography.climate}</p>
+                <p><strong>Águas:</strong> {data.physical_geography.waters}</p>
               </div>
             </div>
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {imageUrl && (
-              <div className="glass-panel" style={{ padding: 0, overflow: 'hidden', border: 'none', position: 'relative', minHeight: '250px' }}>
-                <img 
-                  src={imageUrl} 
-                  alt={data.name} 
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '12px' }} 
-                />
-                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '1rem', background: 'linear-gradient(transparent, rgba(0,0,0,0.8))', color: 'white' }}>
-                  Vista Ilustrativa / Geográfica
-                </div>
-              </div>
-            )}
+            <div className="glass-panel" style={{ background: 'rgba(139, 92, 246, 0.05)', padding: '1.5rem', border: '1px solid rgba(139, 92, 246, 0.2)' }}>
+              <h3 style={{ color: '#a78bfa', marginBottom: '0.8rem' }}>⚔️ Importância Estratégica</h3>
+              <p style={{ fontSize: '1rem', lineHeight: '1.6' }}>{data.strategic_importance}</p>
+            </div>
 
             <div className="glass-panel" style={{ background: 'rgba(255,255,255,0.05)', padding: '1.5rem' }}>
               <h3 className="text-accent" style={{ marginBottom: '1rem' }}>📜 Eventos Bíblicos</h3>

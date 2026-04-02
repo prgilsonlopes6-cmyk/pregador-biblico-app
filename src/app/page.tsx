@@ -40,13 +40,13 @@ export default function Home() {
         </div>
 
         <div className="glass-panel" style={{ background: 'rgba(20, 25, 30, 0.4)', textAlign: 'left' }}>
-          <h2 style={{ marginBottom: '1rem' }} className="text-accent">🗺️ Atlas Bíblico</h2>
+          <h2 style={{ marginBottom: '1rem' }} className="text-accent">🗺️ Geografia Bíblica</h2>
           <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
-            Explore a geografia bíblica com mapas interativos e imagens históricas de cidades e regiões citadas nas Escrituras.
+            Estudo sistemático das terras bíblicas: relevo, clima, mapas e a importância estratégica das regiões e cidades.
           </p>
           <Link href="/atlas">
             <button className="btn-primary" style={{ width: '100%', fontSize: '1.1rem', background: 'linear-gradient(135deg, #10b981, #065f46)' }}>
-              Abrir Atlas Bíblico
+              Abrir Geografia Bíblica
             </button>
           </Link>
         </div>

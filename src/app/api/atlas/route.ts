@@ -18,17 +18,23 @@ export async function POST(req: Request) {
     const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
 
     const prompt = `Você é um geógrafo bíblico e historiador renomado, especializado na tradição cristã.
-Sua tarefa é fornecer informações detalhadas sobre a localização bíblica: "${location}".
+Sua tarefa é fornecer informações detalhadas sobre a localização ou região bíblica: "${location}".
 
 Responda ESTRITAMENTE em formato JSON com a seguinte estrutura:
 {
-  "name": "Nome da Localidade",
+  "name": "Nome da Localidade ou Região",
   "meaning": "Significado do nome, se conhecido",
   "description": "Descrição geográfica e histórica detalhada",
   "coordinates": {
     "lat": 0.000000,
     "lng": 0.000000
   },
+  "physical_geography": {
+    "relief": "Descrição do relevo (montanhas, vales, cluse)",
+    "climate": "Descrição do clima e vegetação na época bíblica",
+    "waters": "Principais rios, fontes ou mares próximos"
+  },
+  "strategic_importance": "Explicação da importância militar, comercial ou política deste lugar no mundo bíblico",
   "events": [
     {
       "event": "Nome do Evento",
@@ -40,7 +46,7 @@ Responda ESTRITAMENTE em formato JSON com a seguinte estrutura:
   "image_search_term": "Termo de busca em inglês para encontrar uma imagem histórica ou geográfica relevante deste lugar"
 }
 
-Certifique-se de que as coordenadas sejam o mais precisas possível para locais conhecidos. Se for um local incerto, forneça a melhor estimativa acadêmica.
+Se for uma região ampla (ex: Galiléia), forneça coordenadas centrais. Certifique-se de que as informações sejam precisas biblicamente.
 A resposta deve ser APENAS o JSON, sem markdown ou explicações externas.`;
 
     const result = await model.generateContent(prompt);
