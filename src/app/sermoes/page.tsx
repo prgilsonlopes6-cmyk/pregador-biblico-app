@@ -15,71 +15,67 @@ export default function Sermoes() {
   const [id, setId] = useState<number | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
 
   useEffect(() => {
-    fetchSermons();
+    const savedSermons = localStorage.getItem('pregador_sermoes');
+    if (savedSermons) {
+      setSermons(JSON.parse(savedSermons));
+    }
   }, []);
 
-  const fetchSermons = async () => {
-    try {
-      const res = await fetch('/api/sermons');
-      const data = await res.json();
-      if (res.ok) setSermons(data);
-    } catch (err) {
-      console.error('Erro ao buscar sermões:', err);
-    }
+  const saveToLocalStorage = (updatedSermons: Sermon[]) => {
+    localStorage.setItem('pregador_sermoes', JSON.stringify(updatedSermons));
+    setSermons(updatedSermons);
   };
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!title || !content) {
       alert('Título e conteúdo são obrigatórios.');
       return;
     }
 
-    setIsLoading(true);
-    try {
-      const res = await fetch('/api/sermons', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, title, content }),
-      });
+    const newSermon: Sermon = {
+      id: id || Date.now(),
+      title,
+      content,
+      created_at: new Date().toISOString(),
+    };
 
-      if (res.ok) {
-        alert('Sermão guardado com sucesso!');
-        fetchSermons();
-        if (!id) {
-            setTitle('');
-            setContent('');
-        }
-      } else {
-        const data = await res.json();
-        alert(data.error || 'Erro ao guardar sermão.');
-      }
-    } catch (_err) {
-      alert('Erro de conexão ao guardar sermão.');
-    } finally {
-      setIsLoading(false);
+    let updatedSermons: Sermon[];
+    if (id) {
+      updatedSermons = sermons.map(s => s.id === id ? newSermon : s);
+    } else {
+      updatedSermons = [newSermon, ...sermons];
+    }
+
+    saveToLocalStorage(updatedSermons);
+    alert('Sermão guardado com sucesso!');
+    if (!id) {
+      setTitle('');
+      setContent('');
     }
   };
 
-  const handleDelete = async (sermonId: number) => {
+  const handleDelete = (sermonId: number) => {
     if (!confirm('Tem certeza que deseja excluir este sermão?')) return;
 
-    try {
-      const res = await fetch(`/api/sermons?id=${sermonId}`, { method: 'DELETE' });
-      if (res.ok) {
-        fetchSermons();
-        if (id === sermonId) {
-          setId(null);
-          setTitle('');
-          setContent('');
-        }
-      }
-    } catch (_err) {
-      alert('Erro ao excluir sermão.');
+    const updatedSermons = sermons.filter(s => s.id !== sermonId);
+    saveToLocalStorage(updatedSermons);
+
+    if (id === sermonId) {
+      setId(null);
+      setTitle('');
+      setContent('');
     }
+  };
+
+  const handlePrint = () => {
+    if (!title || !content) {
+      alert('Nada para imprimir.');
+      return;
+    }
+    window.print();
   };
 
   const handleGenerate = async () => {
@@ -234,11 +230,53 @@ export default function Sermoes() {
               </button>
              <button 
                 className="btn-primary" 
-                onClick={handleSave}
-                disabled={isLoading}
+                onClick={handlePrint}
+                style={{ background: 'rgba(37, 99, 235, 0.1)', border: '1px solid #3b82f6', color: '#60a5fa' }}
               >
-                {isLoading ? 'Salvando...' : 'Guardar Sermão'}
+                Imprimir
               </button>
+             <button 
+                className="btn-primary" 
+                onClick={handleSave}
+              >
+                Guardar Sermão
+              </button>
+          </div>
+          
+          <style jsx global>{`
+            @media print {
+              .glass-panel, .btn-primary, .input-field, .text-accent, h1, p, Link, nav {
+                display: none !important;
+              }
+              body {
+                background: white !important;
+                color: black !important;
+              }
+              .print-content {
+                display: block !important;
+                padding: 2rem;
+              }
+              .print-title {
+                font-size: 24pt;
+                font-weight: bold;
+                margin-bottom: 1rem;
+                border-bottom: 2px solid black;
+                padding-bottom: 0.5rem;
+              }
+              .print-body {
+                font-size: 12pt;
+                line-height: 1.6;
+                white-space: pre-wrap;
+              }
+            }
+            .print-content {
+              display: none;
+            }
+          `}</style>
+
+          <div className="print-content">
+            <h1 className="print-title">{title}</h1>
+            <div className="print-body">{content}</div>
           </div>
         </div>
       </div>
