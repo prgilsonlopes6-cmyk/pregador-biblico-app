@@ -60,7 +60,7 @@ export async function POST(req: Request) {
     };
 
     const model = genAI.getGenerativeModel({ 
-      model: "gemini-1.5-flash",
+      model: "gemini-flash-latest",
       generationConfig: {
         responseMimeType: "application/json",
         responseSchema: schema,
@@ -69,17 +69,37 @@ export async function POST(req: Request) {
 
     const prompt = `Você é um geógrafo bíblico e historiador renomado.
 Forneça informações geográficas bíblicas profundas sobre: "${location}".
-Use fontes acadêmicas e teológicas precisas.`;
+Use fontes acadêmicas e teológicas precisas. Responda apenas com o JSON estruturado.`;
 
     const result = await model.generateContent(prompt);
     const response = await result.response;
-    const data = JSON.parse(response.text());
+    const text = response.text();
+    
+    let data;
+    try {
+      // Tenta parse direto (Ideal para Response Schema)
+      data = JSON.parse(text);
+    } catch (parseError) {
+      // Fallback: Busca o bloco JSON no texto (Caso o modelo não suporte Schema ou anexe texto)
+      const jsonMatch = text.match(/\{[\s\S]*\}/);
+      if (jsonMatch) {
+        try {
+          data = JSON.parse(jsonMatch[0]);
+        } catch (innerError) {
+          console.error("Falha ao parsear JSON extraído:", jsonMatch[0]);
+          throw innerError;
+        }
+      } else {
+        console.error("Texto recebido da IA sem JSON:", text);
+        throw new Error("Formato de resposta inválido");
+      }
+    }
 
     return NextResponse.json(data);
-  } catch (error) {
-    console.error("Erro na API do Atlas Bíblico:", error);
+  } catch (error: any) {
+    console.error("Erro crítico na API do Atlas Bíblico:", error.message || error);
     return NextResponse.json(
-      { error: "Ocorreu um erro ao buscar informações. Tente novamente." },
+      { error: "Erro na IA: " + (error.message || "Tente novamente.") },
       { status: 500 }
     );
   }
