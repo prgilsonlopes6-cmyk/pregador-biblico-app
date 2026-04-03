@@ -210,6 +210,16 @@ export default function Sermoes() {
             className="input-field" 
             value={title} 
             onChange={(e) => setTitle(e.target.value)} 
+            onPaste={(e) => {
+              const items = e.clipboardData.items;
+              for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                  e.preventDefault();
+                  alert('Imagens não são suportadas. Por favor, cole apenas texto.');
+                  return;
+                }
+              }
+            }}
             style={{ fontSize: '1.5rem', fontWeight: 'bold' }} 
           />
           <textarea 
@@ -217,6 +227,16 @@ export default function Sermoes() {
             placeholder="Escreva seu sermão ou gere um esboço usando as ferramentas de IA..."
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            onPaste={(e) => {
+              const items = e.clipboardData.items;
+              for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                  e.preventDefault();
+                  alert('Imagens não são suportadas. Por favor, cole apenas texto.');
+                  return;
+                }
+              }
+            }}
             style={{ flex: 1, minHeight: '450px', resize: 'none', fontFamily: 'inherit', lineHeight: '1.6' }}
           />
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>

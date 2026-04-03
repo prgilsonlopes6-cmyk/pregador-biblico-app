@@ -158,6 +158,16 @@ export default function BibliotecaPage() {
             type="text"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onPaste={(e) => {
+              const items = e.clipboardData.items;
+              for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                  e.preventDefault();
+                  alert('Imagens não são suportadas. Por favor, cole apenas texto.');
+                  return;
+                }
+              }
+            }}
             placeholder="Digite aqui..."
             style={{
               flex: 1,

@@ -103,6 +103,16 @@ export default function AtlasBiblico() {
           className="input-field" 
           value={query} 
           onChange={(e) => setQuery(e.target.value)} 
+          onPaste={(e) => {
+            const items = e.clipboardData.items;
+            for (const item of items) {
+              if (item.type.startsWith('image/')) {
+                e.preventDefault();
+                alert('Imagens não são suportadas. Por favor, cole apenas texto.');
+                return;
+              }
+            }
+          }}
           style={{ flex: 1, fontSize: '1.2rem', color: '#fff', fontWeight: '500' }}
         />
         <button 

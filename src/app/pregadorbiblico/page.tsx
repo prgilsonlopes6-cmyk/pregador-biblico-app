@@ -48,6 +48,15 @@ export default function Login() {
             className="input-field"
             value={password}
             onChange={(e) => { setPassword(e.target.value); setError(false); }}
+            onPaste={(e) => {
+              const items = e.clipboardData.items;
+              for (const item of items) {
+                if (item.type.startsWith('image/')) {
+                  e.preventDefault();
+                  return;
+                }
+              }
+            }}
             disabled={isLoading}
             style={{ marginBottom: '1rem', border: error ? '1px solid #f78166' : '' }}
           />
