@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export async function POST(req: Request) {
   try {
@@ -9,13 +9,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Tópico não fornecido." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: "Chave da API não configurada no servidor." }, { status: 500 });
     }
-    const genAI = new GoogleGenerativeAI(apiKey as string);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+
+    const openai = new OpenAI({ apiKey });
 
     const prompt = `Você é um pastor e erudito experiente na tradição da Assembleia de Deus.
 Gere um esboço de sermão estruturado e ungido sobre o seguinte tema ou texto bíblico: "${topic}".
@@ -32,8 +32,12 @@ Gere um esboço de sermão estruturado e ungido sobre o seguinte tema ou texto b
 
 A mensagem deve ser cristocêntrica, fervorosa e doutrinariamente sólida (pentecostal clássica).`;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = completion.choices[0].message.content || "";
 
     return NextResponse.json({ text });
   } catch (error) {

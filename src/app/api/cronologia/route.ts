@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export async function POST(req: Request) {
   try {
@@ -9,14 +9,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Era não fornecida." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: "Chave da API não configurada no servidor." }, { status: 500 });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const openai = new OpenAI({ apiKey });
 
     const prompt = `Você é um historiador e erudito bíblico. Sua tarefa é fornecer uma lista cronológica de eventos principais para a era bíblica: "${era}".
 
@@ -38,20 +37,22 @@ Responda ESTRITAMENTE em formato JSON com a seguinte estrutura:
 Forneça entre 5 e 8 eventos principais, em ordem cronológica correta.
 A resposta deve ser APENAS o JSON, sem markdown ou explicações externas.`;
 
-    const result = await model.generateContent(prompt);
-    const response = await result.response;
-    let text = response.text();
-    
-    // Remove markdown code blocks if present
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    let text = completion.choices[0].message.content || "";
+
     text = text.replace(/```json/g, "").replace(/```/g, "").trim();
-    
+
     const data = JSON.parse(text);
 
     return NextResponse.json(data);
   } catch (error) {
     console.error("Erro na API de Cronologia:", error);
     return NextResponse.json(
-      { error: "Ocorreu um erro ao buscar a cronologia. Tente novamente." },
+      { error: "Ocorreu um erro ao buscar a cronologia. Tose novamente." },
       { status: 500 }
     );
   }

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export async function POST(req: Request) {
   try {
@@ -9,13 +9,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Texto não fornecido." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: "Chave da API não configurada no servidor." }, { status: 500 });
     }
-    const genAI = new GoogleGenerativeAI(apiKey as string);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+
+    const openai = new OpenAI({ apiKey });
 
     const prompt = `Você é um exegeta magistral especializado nas línguas originais da Bíblia (Grego Coiné e Hebraico Bíblico), e ensina pastores da Assembleia de Deus.
 Realize uma exegese profunda da seguinte palavra ou versículo: "${word}".
@@ -28,8 +28,12 @@ Realize uma exegese profunda da seguinte palavra ou versículo: "${word}".
 4. **Contexto Original:** O que o texto significava para os ouvintes originais naquela cultura da época.
 5. **Aplicação Homilética:** Um "ouro" teológico ou revelação que o pregador pode usar para a igreja hoje.`;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = completion.choices[0].message.content || "";
 
     return NextResponse.json({ result: text });
   } catch (error) {

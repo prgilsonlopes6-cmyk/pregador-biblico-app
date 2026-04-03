@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export async function POST(req: Request) {
   try {
@@ -9,21 +9,24 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Palavra não fornecida." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: "Chave da API não configurada no servidor." }, { status: 500 });
     }
 
-    const genAI = new GoogleGenerativeAI(apiKey as string);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const openai = new OpenAI({ apiKey });
 
     const prompt = `Você é um dicionário teológico profundamente fundamentado na teologia cristã e na tradição da Assembleia de Deus.
 Forneça a definição, origem (hebraico/grego se aplicável), referências bíblicas e o significado teológico da seguinte palavra: "${word}".
 O formato da resposta deve ser em Markdown, claro, acadêmico e acessível. Crie títulos e estruturação adequada.`;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = completion.choices[0].message.content || "";
 
     return NextResponse.json({ result: text });
   } catch (error) {

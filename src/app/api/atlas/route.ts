@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { GoogleGenerativeAI } from "@google/generative-ai";
+import OpenAI from "openai";
 
 export async function POST(req: Request) {
   try {
@@ -9,15 +9,13 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "Localização não fornecida." }, { status: 400 });
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    const apiKey = process.env.OPENAI_API_KEY;
 
     if (!apiKey) {
       return NextResponse.json({ error: "Chave da API não configurada no servidor." }, { status: 500 });
     }
 
-    // Usando exatamente o mesmo padrão estável da rota de enciclopédia
-    const genAI = new GoogleGenerativeAI(apiKey as string);
-    const model = genAI.getGenerativeModel({ model: "gemini-flash-latest" });
+    const openai = new OpenAI({ apiKey });
 
     const prompt = `Você é um geógrafo bíblico de profunda erudição cristã.
 Forneça um estudo geográfico e histórico detalhado em formato JSON sobre o local ou região: "${location}".
@@ -42,29 +40,33 @@ IMPORTANTE: Responda APENAS com o objeto JSON abaixo, sem qualquer texto fora de
 }
 Seja preciso com as coordenadas geográficas para uso em mapas.`;
 
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
-    
-    let data;
-    // Extrai apenas o bloco JSON caso a IA escreva texto extra por engano
+    const completion = await openai.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    const text = completion.choices[0].message.content || "";
+
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (!jsonMatch) {
-       console.error("ERRO: IA não retornou JSON estruturado.", text);
-       throw new Error("A Inteligência Artificial não retornou dados válidos.");
+      console.error("ERRO: IA não retornou JSON estruturado.", text);
+      throw new Error("A Inteligência Artificial não retornou dados válidos.");
     }
-    
+
+    let data;
     try {
       data = JSON.parse(jsonMatch[0].trim());
-    } catch (e) {
+    } catch {
       console.error("ERRO: Falha ao converter resposta em JSON.", jsonMatch[0]);
       throw new Error("Erro ao converter os dados da geografia.");
     }
 
     return NextResponse.json(data);
-  } catch (error: any) {
-    console.error("ERRO CRÍTICO API ATALAS:", error.message || error);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Erro desconhecido";
+    console.error("ERRO CRÍTICO API ATALAS:", message);
     return NextResponse.json(
-      { error: "Erro técnico: " + (error.message || "Tente novamente.") },
+      { error: "Erro técnico: " + message },
       { status: 500 }
     );
   }

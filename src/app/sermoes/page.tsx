@@ -97,7 +97,7 @@ export default function Sermoes() {
       } else {
         alert(data.error || 'Erro ao gerar sermão.');
       }
-    } catch (_err) {
+    } catch {
       alert('Erro de conexão ao gerar sermão.');
     } finally {
       setIsGenerating(false);

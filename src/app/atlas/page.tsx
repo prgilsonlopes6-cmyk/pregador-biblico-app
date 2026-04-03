@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 
 interface AtlasData {
   name: string;
@@ -30,8 +30,6 @@ export default function AtlasBiblico() {
   const [query, setQuery] = useState('');
   const [data, setData] = useState<AtlasData | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState<string | null>(null);
-
   const handleSearch = async (e?: React.FormEvent, overrideQuery?: string) => {
     if (e) e.preventDefault();
     const activeQuery = overrideQuery || query;
@@ -39,7 +37,6 @@ export default function AtlasBiblico() {
 
     setIsLoading(true);
     setData(null);
-    setImageUrl(null);
     if (overrideQuery) setQuery(overrideQuery);
 
     try {
@@ -52,7 +49,6 @@ export default function AtlasBiblico() {
       if (res.ok) {
         const atlasData: AtlasData = await res.json();
         setData(atlasData);
-        fetchImage(atlasData.name);
       } else {
         const errData = await res.json();
         alert(errData.error || 'Erro ao buscar dados do atlas.');
@@ -62,24 +58,6 @@ export default function AtlasBiblico() {
       alert('Erro de conexão ao buscar dados do atlas.');
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const fetchImage = async (name: string) => {
-    try {
-      // Wikimedia Commons API to find an image for the location
-      const wikiRes = await fetch(`https://pt.wikipedia.org/w/api.php?action=query&prop=pageimages&format=json&piprop=original&titles=${name}&origin=*`);
-      const wikiData = await wikiRes.json();
-      const pages = wikiData.query.pages;
-      const pageId = Object.keys(pages)[0];
-      if (pageId !== "-1" && pages[pageId].original) {
-        setImageUrl(pages[pageId].original.source);
-      } else {
-        // Fallback to Unsplash if Wikipedia fails
-        setImageUrl(`https://source.unsplash.com/featured/?${name},mountains`);
-      }
-    } catch (err) {
-      console.error('Erro ao buscar imagem:', err);
     }
   };
 

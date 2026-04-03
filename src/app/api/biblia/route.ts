@@ -9,7 +9,7 @@ export async function GET(req: Request) {
     const data = await response.json();
 
     return NextResponse.json(data);
-  } catch (_error) {
+  } catch {
     return NextResponse.json(
       { error: "Erro ao buscar a Bíblia." },
       { status: 500 }
