@@ -17,8 +17,9 @@ export default function Login() {
     setError(false);
 
     try {
-      if (password === APP_PASSWORD) {
+      if (password.trim().toLowerCase() === APP_PASSWORD.toLowerCase()) {
         localStorage.setItem('app_auth', 'true');
+        document.cookie = "app_auth=true; path=/; max-age=31536000";
         router.push('/');
         router.refresh();
       } else {
