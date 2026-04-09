@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { loginAction } from './actions';
+
+const APP_PASSWORD = 'shalom';
 
 export default function Login() {
   const [password, setPassword] = useState('');
@@ -16,8 +17,8 @@ export default function Login() {
     setError(false);
 
     try {
-      const result = await loginAction(password);
-      if (result.success) {
+      if (password === APP_PASSWORD) {
+        localStorage.setItem('app_auth', 'true');
         router.push('/');
         router.refresh();
       } else {
@@ -72,7 +73,7 @@ export default function Login() {
         </form>
 
         <div style={{ marginTop: '2.5rem', fontSize: '1rem', color: 'var(--text-secondary)' }}>
-          Criado e Desenvolvido para<br />
+          Criado e Desenvolvido por<br />
           <strong style={{ color: 'var(--gold-accent)', fontSize: '1.2rem' }}>Pr. Gilson Lopes</strong>
         </div>
       </div>
