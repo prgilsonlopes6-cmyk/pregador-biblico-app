@@ -1,59 +1,67 @@
-import { NextResponse } from "next/server";
-import OpenAI from "openai";
+import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
   try {
-    const { era } = await req.json();
+    const { query, category } = await req.json();
 
-    if (!era) {
-      return NextResponse.json({ error: "Era não fornecida." }, { status: 400 });
+    if (!query) {
+      return NextResponse.json({ error: 'Query is required' }, { status: 400 });
     }
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const systemPrompt = `Você é um historiador bíblico especialista e teólogo.
+Sua tarefa é gerar uma linha do tempo estruturada em JSON sobre um termo fornecido.
+A categoria da busca é: ${category}.
 
-    if (!apiKey) {
-      return NextResponse.json({ error: "Chave da API não configurada no servidor." }, { status: 500 });
-    }
-
-    const openai = new OpenAI({ apiKey });
-
-    const prompt = `Você é um historiador e erudito bíblico. Sua tarefa é fornecer uma lista cronológica de eventos principais para a era bíblica: "${era}".
-
-Responda ESTRITAMENTE em formato JSON com a seguinte estrutura:
+O JSON deve seguir EXATAMENTE esta estrutura:
 {
-  "era": "Nome da Era",
-  "summary": "Breve resumo teológico e histórico desta era",
+  "title": "Título da Linha do Tempo",
+  "summary": "Um resumo histórico e teológico (máximo 300 caracteres). Se for um personagem, inclua nascimento/morte aproximados aqui.",
   "events": [
     {
-      "date": "Ano aproximado (ex: 1446 a.C. ou 30 d.C.)",
+      "date": "Data ou Período (ex: 1446 a.C., Cerca de 30 d.C.)",
       "title": "Título do Evento",
-      "description": "Explicação breve do que ocorreu",
-      "characters": ["Personagem 1", "Personagem 2"],
-      "significance": "Importância teológica para a redenção"
+      "description": "Descrição detalhada do evento e seu impacto.",
+      "verses": "Referência bíblica principal (ex: Gênesis 12:1-3)"
     }
   ]
 }
 
-Forneça entre 5 e 8 eventos principais, em ordem cronológica correta.
-A resposta deve ser APENAS o JSON, sem markdown ou explicações externas.`;
+Regras:
+1. Respostas estritamente em Português do Brasil.
+2. Seja preciso cronologicamente usando a cronologia bíblica tradicional.
+3. Se for CATEGORIA PERSONAGEM: Foque na vida e eventos principais da pessoa.
+4. Se for CATEGORIA TEMA: Mostre como esse tema se desenvolveu em eventos bíblicos (do AT ao NT).
+5. Se for CATEGORIA PERÍODO: Foque nos marcos temporais daquela era específica.
+6. Retorne APENAS o JSON.`;
 
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
+    const response = await fetch("https://api.openai.com/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "gpt-4o-mini",
+        messages: [
+          { role: "system", content: systemPrompt },
+          { role: "user", content: `Gere uma linha do tempo para: ${query}` },
+        ],
+        response_format: { type: "json_object" },
+      }),
     });
 
-    let text = completion.choices[0].message.content || "";
+    const data = await response.json();
 
-    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+    if (data.error) {
+       console.error("OpenAI Error:", data.error);
+       return NextResponse.json({ error: "Erro na API de IA" }, { status: 500 });
+    }
 
-    const data = JSON.parse(text);
+    const timelineData = JSON.parse(data.choices[0].message.content);
+    return NextResponse.json(timelineData);
 
-    return NextResponse.json(data);
   } catch (error) {
-    console.error("Erro na API de Cronologia:", error);
-    return NextResponse.json(
-      { error: "Ocorreu um erro ao buscar a cronologia. Tose novamente." },
-      { status: 500 }
-    );
+    console.error("Error generating timeline:", error);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
