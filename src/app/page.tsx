@@ -6,9 +6,6 @@ export default function Home() {
       <h1 style={{ fontSize: '3.5rem', marginBottom: '0.2rem', fontWeight: 700 }}>
         Pregador <span className="text-accent">Bíblico</span>
       </h1>
-      <p style={{ fontSize: '1.2rem', color: 'var(--gold-accent)', marginBottom: '1rem', fontWeight: 'bold' }}>
-        Pr. Gilson Lopes
-      </p>
       <p style={{ fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '3rem' }}>
         Estudo profundo, exegese no original e plataforma de sermões estruturados.
       </p>
