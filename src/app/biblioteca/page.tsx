@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
 
-type Tab = "biblia" | "dicionario" | "enciclopedia" | "exegese";
+type Tab = "biblia" | "biblia_original" | "dicionario" | "enciclopedia" | "exegese";
 
 export default function BibliotecaPage() {
   const [activeTab, setActiveTab] = useState<Tab>("biblia");
@@ -23,8 +23,7 @@ export default function BibliotecaPage() {
 
     try {
       if (activeTab === "biblia") {
-        // A API bible-api suporta "joao 3:16?translation=almeida"
-        const res = await fetch(`/api/biblia?busca=${encodeURIComponent(query)}`);
+        const res = await fetch(`https://bible-api.com/${encodeURIComponent(query)}?translation=almeida`);
         const data = await res.json();
         
         if (data.error || data.erro) {
@@ -34,6 +33,18 @@ export default function BibliotecaPage() {
             title: data.reference,
             markdown: data.verses?.map((v: { verse: string; text: string }) => `**${v.verse}** ${v.text}`).join("\n\n") || data.result
           });
+        }
+      } else if (activeTab === "biblia_original") {
+        const res = await fetch("/api/biblia-original", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ reference: query }),
+        });
+        const data = await res.json();
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setResult({ markdown: data.result });
         }
       } else if (activeTab === "dicionario") {
         const res = await fetch("/api/dicionario", {
@@ -104,6 +115,7 @@ export default function BibliotecaPage() {
       <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '2rem', flexWrap: 'wrap' }}>
         {[
           { id: "biblia", label: "📖 Bíblia" },
+          { id: "biblia_original", label: "📜 Interlinear (Original)" },
           { id: "dicionario", label: "📓 Dicionário Teológico" },
           { id: "enciclopedia", label: "🏛️ Enciclopédia Bíblica" },
           { id: "exegese", label: "🔎 Exegese (Original)" }
@@ -142,12 +154,14 @@ export default function BibliotecaPage() {
       <div className="glass-panel" style={{ padding: '2rem', marginBottom: '2rem' }}>
         <h2 style={{ marginBottom: '1rem', color: 'var(--text-primary)' }}>
           {activeTab === "biblia" && "Pesquisar Referência Bíblica"}
+          {activeTab === "biblia_original" && "Buscar Versículo no Original"}
           {activeTab === "dicionario" && "Buscar Significado Teológico"}
           {activeTab === "enciclopedia" && "Explorar Tópico Bíblico"}
           {activeTab === "exegese" && "Pesquisar Palavra ou Verso no Grego/Hebraico"}
         </h2>
         <p style={{ color: 'var(--text-secondary)', marginBottom: '1.5rem', fontSize: '0.95rem' }}>
           {activeTab === "biblia" && "Exemplo: João 3:16 ou Genesis 1"}
+          {activeTab === "biblia_original" && "Exemplo: João 1:1, Gênesis 1:1, Romanos 8:28"}
           {activeTab === "dicionario" && "Exemplo: Graça, Justificação, Escatologia"}
           {activeTab === "enciclopedia" && "Exemplo: Arca da Aliança, Império Romano, Templo de Salomão"}
           {activeTab === "exegese" && "Exemplo: João 1:1, Chesed, Ágape, Paráclito"}
