@@ -73,7 +73,7 @@ export default function Login() {
         </form>
 
         <div style={{ marginTop: '2.5rem', fontSize: '1rem', color: 'var(--text-secondary)' }}>
-          Criado e Desenvolvido pelo<br />
+          Criado e Desenvolvido por<br />
           <strong style={{ color: 'var(--gold-accent)', fontSize: '1.2rem' }}>Pr. Gilson Lopes</strong>
         </div>
       </div>
