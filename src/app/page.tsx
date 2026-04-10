@@ -49,6 +49,18 @@ export default function Home() {
         </div>
 
         <div className="glass-panel" style={{ background: 'rgba(20, 25, 30, 0.4)', textAlign: 'left' }}>
+          <h2 style={{ marginBottom: '1rem' }} className="text-accent">🛡️ Apologética Bíblica</h2>
+          <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
+            Defenda a fé com autoridade teológica. Estudo profundo sobre seitas, doutrinas e bases bíblicas para o combate ao erro.
+          </p>
+          <Link href="/apologetica">
+            <button className="btn-primary" style={{ width: '100%', fontSize: '1.1rem', background: 'linear-gradient(135deg, #6366f1, #4338ca)' }}>
+              Abrir Apologética
+            </button>
+          </Link>
+        </div>
+
+        <div className="glass-panel" style={{ background: 'rgba(20, 25, 30, 0.4)', textAlign: 'left' }}>
           <h2 style={{ marginBottom: '1rem' }} className="text-gold">⏳ Cronologia Bíblica</h2>
           <p style={{ marginBottom: '1.5rem', color: 'var(--text-secondary)', lineHeight: '1.6' }}>
             Localize-se na história com uma linha do tempo interativa, dos patriarcas ao Novo Testamento.

@@ -1,73 +1,30 @@
-import { NextResponse } from "next/server";
-import OpenAI from "openai";
-
 export async function POST(req: Request) {
-  try {
-    const { location } = await req.json();
+  const { pergunta } = await req.json();
 
-    if (!location) {
-      return NextResponse.json({ error: "Localização não fornecida." }, { status: 400 });
-    }
-
-    const apiKey = process.env.OPENAI_API_KEY;
-
-    if (!apiKey) {
-      return NextResponse.json({ error: "Chave da API não configurada no servidor." }, { status: 500 });
-    }
-
-    const openai = new OpenAI({ apiKey });
-
-    const prompt = `Você é um geógrafo bíblico de profunda erudição cristã.
-Forneça um estudo geográfico e histórico detalhado em formato JSON sobre o local ou região: "${location}".
-
-IMPORTANTE: Responda APENAS com o objeto JSON abaixo, sem qualquer texto fora dele:
-{
-  "name": "Nome do Local ou Região",
-  "meaning": "Significado do nome",
-  "description": "História bíblica e descrição geográfica bem detalhada",
-  "coordinates": { "lat": 0.0, "lng": 0.0 },
-  "physical_geography": {
-    "relief": "Montanhas, vales e relevo físico",
-    "climate": "Clima, chuvas e flora na era bíblica",
-    "waters": "Rios, fontes, lagos ou mares próximos"
-  },
-  "strategic_importance": "Importância comercial, militar ou política no mundo antigo",
-  "events": [
-    { "event": "Acontecimento Marcante", "reference": "Capítulo/Verso", "description": "Fato ocorrido aqui" }
-  ],
-  "theological_insight": "Breve lição ou reflexão teológica espiritual",
-  "image_search_term": "Termo para busca de imagem em inglês"
-}
-Seja preciso com as coordenadas geográficas para uso em mapas.`;
-
-    const completion = await openai.chat.completions.create({
+  const response = await fetch("https://api.openai.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
       model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }],
-    });
+      messages: [
+        {
+          role: "system",
+          content: "Você é um especialista em geografia bíblica.",
+        },
+        {
+          role: "user",
+          content: pergunta,
+        },
+      ],
+    }),
+  });
 
-    const text = completion.choices[0].message.content || "";
+  const data = await response.json();
 
-    const jsonMatch = text.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) {
-      console.error("ERRO: IA não retornou JSON estruturado.", text);
-      throw new Error("A Inteligência Artificial não retornou dados válidos.");
-    }
-
-    let data;
-    try {
-      data = JSON.parse(jsonMatch[0].trim());
-    } catch {
-      console.error("ERRO: Falha ao converter resposta em JSON.", jsonMatch[0]);
-      throw new Error("Erro ao converter os dados da geografia.");
-    }
-
-    return NextResponse.json(data);
-  } catch (error) {
-    const message = error instanceof Error ? error.message : "Erro desconhecido";
-    console.error("ERRO CRÍTICO API ATALAS:", message);
-    return NextResponse.json(
-      { error: "Erro técnico: " + message },
-      { status: 500 }
-    );
-  }
+  return Response.json({
+    resposta: data.choices[0].message.content,
+  });
 }

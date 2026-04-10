@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Pregador Biblico</string>
+    <string name="title_activity_main">Pregador Biblico</string>
+    <string name="package_name">com.pregadorbiblico.app</string>
+    <string name="custom_url_scheme">com.pregadorbiblico.app</string>
+</resources>
