@@ -145,11 +145,13 @@ export default function AtlasBiblico() {
                   allowFullScreen 
                   srcDoc={`
                     <style>body{margin:0;overflow:hidden;}</style>
-                    <iframe src="https://maps.google.com/maps?q=${data.coordinates.lat},${data.coordinates.lng}&z=10&t=k&output=embed" width="100%" height="100%" frameborder="0" style="border:0"></iframe>
+                    <iframe src="https://maps.google.com/maps?q=${data?.coordinates?.lat || 0},${data?.coordinates?.lng || 0}&z=10&t=k&output=embed" width="100%" height="100%" frameborder="0" style="border:0"></iframe>
                   `}
                 ></iframe>
               </div>
-              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textAlign: 'center' }}>Coordenadas: {data.coordinates.lat.toFixed(4)}, {data.coordinates.lng.toFixed(4)}</p>
+              <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', textAlign: 'center' }}>
+                Coordenadas: {data?.coordinates?.lat?.toFixed(4) || '0'}, {data?.coordinates?.lng?.toFixed(4) || '0'}
+              </p>
             </div>
 
             <div className="glass-panel" style={{ background: 'rgba(52, 211, 153, 0.05)', padding: '1.5rem', border: '1px solid rgba(52, 211, 153, 0.2)' }}>

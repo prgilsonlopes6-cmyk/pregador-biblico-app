@@ -34,12 +34,14 @@ Seja acadêmico, mas acessível para pastores e estudantes da Bíblia.`;
     });
 
     const text = completion.choices[0].message.content || "";
+    // Limpeza de possíveis blocos de código markdown desnecessários
+    const cleanText = text.replace(/```markdown|```/g, "").trim();
 
-    return NextResponse.json({ result: text });
-  } catch (error) {
-    console.error("Erro na API de dicionário:", error);
+    return NextResponse.json({ result: cleanText });
+  } catch (error: any) {
+    console.error("Erro detalhado na API de dicionário:", error);
     return NextResponse.json(
-      { error: "Ocorreu um erro ao processar a definição teológica. Tente novamente." },
+      { error: "Erro ao processar definição. Verifique se sua chave da OpenAI é válida." },
       { status: 500 }
     );
   }

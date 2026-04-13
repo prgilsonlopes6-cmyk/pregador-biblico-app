@@ -62,11 +62,41 @@ Regras:
     });
 
     const text = completion.choices[0].message.content || "{}";
-    const atlasData = JSON.parse(text);
+    
+    try {
+      const atlasData = JSON.parse(text);
+      
+      // Validação básica dos campos obrigatórios para evitar quebra no frontend
+      if (!atlasData.name || !atlasData.coordinates || typeof atlasData.coordinates.lat !== 'number') {
+        throw new Error("Resposta da IA incompleta ou em formato inválido.");
+      }
 
-    return NextResponse.json(atlasData);
-  } catch (error) {
-    console.error("Erro na API de atlas:", error);
+      return NextResponse.json(atlasData);
+    } catch (parseError) {
+      console.error("Erro ao processar JSON da IA:", text);
+      return NextResponse.json(
+        { error: "A IA retornou um formato inválido. Por favor, tente a pesquisa novamente." },
+        { status: 500 }
+      );
+    }
+  } catch (error: any) {
+    console.error("Erro detalhado na API de atlas:", error);
+    
+    // Tratamento específico para erros de cota ou chave da OpenAI
+    if (error.status === 401 || error.status === 403) {
+      return NextResponse.json(
+        { error: "Chave da API inválida ou sem permissão. Verifique suas configurações." },
+        { status: 500 }
+      );
+    }
+    
+    if (error.status === 429) {
+      return NextResponse.json(
+        { error: "Limite de uso da API atingido. Aguarde um momento e tente novamente." },
+        { status: 429 }
+      );
+    }
+
     return NextResponse.json(
       { error: "Ocorreu um erro ao processar os dados geográficos. Tente novamente." },
       { status: 500 }

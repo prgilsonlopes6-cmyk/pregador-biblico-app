@@ -35,12 +35,14 @@ Mantenha um tom solene, informativo e profundamente bíblico.`;
     });
 
     const text = completion.choices[0].message.content || "";
+    // Limpeza de possíveis blocos de código markdown desnecessários
+    const cleanText = text.replace(/```markdown|```/g, "").trim();
 
-    return NextResponse.json({ result: text });
-  } catch (error) {
-    console.error("Erro na API de enciclopédia:", error);
+    return NextResponse.json({ result: cleanText });
+  } catch (error: any) {
+    console.error("Erro detalhado na API de enciclopédia:", error);
     return NextResponse.json(
-      { error: "Ocorreu um erro ao processar a pesquisa enciclopédica. Tente novamente." },
+      { error: "Erro ao processar pesquisa enciclopédica. Verifique sua chave da OpenAI." },
       { status: 500 }
     );
   }
