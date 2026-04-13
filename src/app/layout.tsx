@@ -4,6 +4,11 @@ import './globals.css';
 export const metadata: Metadata = {
   title: 'Pregador Bíblico | Pr. Gilson Lopes',
   description: 'Aplicativo de estudo profundo das Escrituras (Hebraico, Grego) e Gerador de Sermões.',
+  icons: {
+    icon: '/icon.png',
+    apple: '/icon.png',
+  },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
