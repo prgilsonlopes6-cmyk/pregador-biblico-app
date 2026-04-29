@@ -1,4 +1,4 @@
-package com.pregadorbiblico.app;
+package com.glsolucoes.app;
 
 import com.getcapacitor.BridgeActivity;
 

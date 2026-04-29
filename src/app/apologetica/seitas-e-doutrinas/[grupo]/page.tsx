@@ -2,6 +2,12 @@ import Link from 'next/link';
 import { SEITAS_E_DOUTRINAS } from '@/data/apologetica';
 import { notFound } from 'next/navigation';
 
+export async function generateStaticParams() {
+  return SEITAS_E_DOUTRINAS.map((g) => ({
+    grupo: g.id,
+  }));
+}
+
 export default async function SeitaDetailPage({ params }: { params: Promise<{ grupo: string }> }) {
   const { grupo } = await params;
   const groupData = SEITAS_E_DOUTRINAS.find(g => g.id === grupo);
